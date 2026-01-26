@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar Produk - Mahani Inventori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                900: "#1e3a8a", // biru tua sidebar
+                800: "#1e40af",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-pink-100 min-h-screen flex flex-col">
+    <!-- Wrapper utama -->
+    <div class="flex flex-1">
+      <!-- Header Mobile -->
+      <header
+        class="lg:hidden bg-gradient-to-r from-primary-900 to-primary-800 text-white p-4 flex items-center justify-between shadow-md fixed top-0 left-0 right-0 z-50"
+      >
+        <h1 class="text-2xl font-bold tracking-tight">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-sm text-blue-200 mt-1 opacity-80">
+          Sistem Inventori Modern
+        </p>
+        <button id="hamburgerBtn" class="text-3xl focus:outline-none">
+          ☰
+        </button>
+      </header>
+
+      <!-- SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-primary-900 to-primary-800 text-white flex flex-col shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:static lg:inset-auto"
+      >
+        <div class="p-6 border-b border-purple-700/30">
+          <h1 class="text-2xl font-bold tracking-tight">
+            MAHANI <span class="text-purple-300">INVENTORI</span>
+          </h1>
+          <p class="text-xs text-blue-200 mt-1 opacity-80">
+            Sistem Inventori Modern
+          </p>
+        </div>
+
+        <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+          <a
+            href="dashboard.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🏠</span> Dashboard
+          </a>
+          <a
+            href="cashier.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🖥️</span> Kasir
+          </a>
+          <a
+            href="manual-transaction.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🛒</span> Penjualan
+          </a>
+
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Produk
+          </div>
+
+          <a
+            href="search-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🔍</span> Cari Produk
+          </a>
+          <a
+            href="product-list.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 text-white font-medium transition"
+          >
+            <span class="text-xl mr-4">📋</span> Daftar Produk
+          </a>
+          <a
+            href="restock-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📦</span> Restock Produk
+          </a>
+          <a
+            href="add-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">➕</span> Tambah Produk
+          </a>
+          <a
+            href="categories.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📁</span> Kelola Kategori
+          </a>
+
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Laporan & Riwayat
+          </div>
+
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📊</span> Laporan Keuangan
+          </a>
+          <a
+            href="transaction-history.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📜</span> Riwayat Transaksi
+          </a>
+        </nav>
+
+        <!-- Footer Sidebar -->
+        <div class="p-4 border-t border-purple-700/30 text-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p>© 2026 Mahani Inventori</p>
+              <p class="text-xs opacity-70">
+                Dibuat oleh Arunika Mahani Amertha
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Overlay gelap saat sidebar mobile terbuka -->
+      <div
+        id="overlay"
+        class="fixed inset-0 bg-black/50 hidden lg:hidden z-30"
+      ></div>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 flex flex-col">
+        <header
+          class="bg-white shadow-sm p-4 flex justify-between items-center"
+        >
+          <h2 class="text-2xl font-semibold text-gray-800">Daftar Produk</h2>
+          <a
+            href="dashboard.html"
+            class="px-4 py-2 bg-purple-300 text-white hover:bg-blue-600 rounded-lg transition"
+            >Kembali ke Dashboard
+          </a>
+        </header>
+
+        <div class="p-6 md:p-8 max-w-8xl mx-auto transform scale-90">
+          <!-- Controls: Search + Filter + Loading -->
+          <div
+            class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+          >
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Cari nama, merk, atau varian..."
+              class="w-full sm:w-96 px-4 py-3 bg-gray-100 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/100 transition"
+            />
+            <div class="flex items-center space-x-4">
+              <label
+                for="filterKategori"
+                class="text-sm font-medium text-gray-800"
+                >Filter Kategori:</label
+              >
+              <select
+                id="filterKategori"
+                class="px-4 py-3 bg-gray-100 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+              >
+                <option value="">Semua Kategori</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Loading Spinner -->
+          <div id="loading" class="hidden text-center py-10">
+            <div
+              class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-primary-700 border-gray-300"
+            ></div>
+            <p class="mt-4 text-gray-600">Memuat produk...</p>
+          </div>
+
+          <!-- Tabel Produk -->
+          <div
+            class="overflow-x-auto bg-white rounded-2xl shadow-2xl border border-gray-200"
+          >
+            <table
+              class="w-full min-w-max bg-primary/5 border border-primary/20 rounded-2xl overflow-hidden shadow-2xl"
+            >
+              <thead class="bg-blue-500 text-white px4">
+                <tr>
+                  <th
+                    class="px-5 py-2 text-left cursor-pointer"
+                    data-sort="kategori"
+                  >
+                    Kategori
+                  </th>
+                  <th
+                    class="px-5 py-2 text-left cursor-pointer"
+                    data-sort="nama"
+                  >
+                    Nama
+                  </th>
+                  <th
+                    class="px-5 py-2 text-left cursor-pointer"
+                    data-sort="merk"
+                  >
+                    Merk
+                  </th>
+                  <th
+                    class="px-5 py-2 text-left cursor-pointer"
+                    data-sort="varian"
+                  >
+                    Varian
+                  </th>
+                  <th
+                    class="px-5 py-2 text-right cursor-pointer"
+                    data-sort="hargaPokok"
+                  >
+                    Harga Pokok
+                  </th>
+                  <th
+                    class="px-5 py-2 text-right cursor-pointer"
+                    data-sort="harga"
+                  >
+                    Harga Jual
+                  </th>
+                  <th
+                    class="px-5 py-2 text-right cursor-pointer"
+                    data-sort="stok"
+                  >
+                    Stok
+                  </th>
+                  <th class="px-5 py-2 text-right">Keterangan Tambahan</th>
+                  <th
+                    class="px-5 py-2 text-left cursor-pointer"
+                    data-sort="sku"
+                  >
+                    SKU
+                  </th>
+                  <th class="px-5 py-2 text-left">Barcode</th>
+                  <th class="px-5 py-2 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody
+                id="productTableBody"
+                class="divide-y divide-black/10"
+              ></tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4"
+          >
+            <div id="paginationInfo" class="text-sm text-gray-600"></div>
+            <div class="flex gap-2" id="paginationButtons"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener("click", () => {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        });
+      }
+
+      if (closeSidebar || overlay) {
+        const closeMenu = () => {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        };
+
+        if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
+        if (overlay) overlay.addEventListener("click", closeMenu);
+      }
+
+      window.addEventListener("load", async () => {
+        const db = await idb.openDB("MahaniInventori", 3);
+        const isLoggedIn = await db.get("auth", "isLoggedIn");
+        if (isLoggedIn?.value !== true) {
+          window.location.href = "login.html";
+        }
+      });
+
+      const ITEMS_PER_PAGE = 10;
+      let currentPage = 1;
+      let sortColumn = "nama";
+      let sortDirection = "asc";
+
+      async function openDB() {
+        return idb.openDB("MahaniInventori", 3, {
+          upgrade(db, oldVersion, newVersion, transaction) {
+            if (oldVersion < 3) {
+              // Migrasi data lama: tambah hargaPokok = 0 kalau belum ada
+              // Buat semua store yang dibutuhkan
+              if (!db.objectStoreNames.contains("products")) {
+                db.createObjectStore("products", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("categories")) {
+                db.createObjectStore("categories", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("transaksi")) {
+                db.createObjectStore("transaksi", { keyPath: "id" });
+              }
+              if (!db.objectStoreNames.contains("auth")) {
+                db.createObjectStore("auth", { keyPath: "key" });
+              }
+              if (db.objectStoreNames.contains("products")) {
+                const store = transaction.objectStore("products");
+                store.openCursor().onsuccess = (event) => {
+                  const cursor = event.target.result;
+                  if (cursor) {
+                    const item = cursor.value;
+                    if (!item.hargaPokok) {
+                      item.hargaPokok = 0;
+                      cursor.update(item);
+                    }
+                    cursor.continue();
+                  }
+                };
+              }
+            }
+          },
+        });
+      }
+
+      async function loadCategoriesIntoFilter() {
+        const db = await openDB();
+        const products = await db.getAll("products");
+
+        // Ambil semua kategori yang ada di produk, lalu buat unik
+        const categories = [
+          ...new Set(
+            products.map((p) => p.kategori).filter(Boolean), // hilangkan undefined/null/empty
+          ),
+        ].sort();
+
+        const select = document.getElementById("filterKategori");
+        // Kosongkan dulu selain option pertama
+        select.innerHTML = '<option value="">Semua Kategori</option>';
+
+        categories.forEach((cat) => {
+          const option = document.createElement("option");
+          option.value = cat;
+          option.textContent = cat;
+          select.appendChild(option);
+        });
+      }
+
+      async function loadProducts(filterCat = "") {
+        const loading = document.getElementById("loading");
+        loading.classList.remove("hidden");
+
+        try {
+          const db = await openDB();
+          let products = await db.getAll("products");
+
+          // Ambil kata kunci dari search bar
+          const searchText =
+            document
+              .getElementById("searchInput")
+              ?.value?.toLowerCase()
+              .trim() || "";
+
+          // Filter kategori dulu
+          let filtered = filterCat
+            ? products.filter((p) => p.kategori === filterCat)
+            : products;
+
+          // Lalu filter berdasarkan search (jika ada kata kunci)
+          if (searchText) {
+            filtered = filtered.filter((p) =>
+              [p.nama, p.merk || "", p.varian || ""].some((field) =>
+                field.toLowerCase().includes(searchText),
+              ),
+            );
+          }
+
+          // Sorting
+          filtered.sort((a, b) => {
+            let valA, valB;
+
+            switch (sortColumn) {
+              case "kategori":
+                valA = (a.kategori || "").toLowerCase();
+                valB = (b.kategori || "").toLowerCase();
+                break;
+              case "nama":
+                valA = (a.nama || "").toLowerCase();
+                valB = (b.nama || "").toLowerCase();
+                break;
+              case "merk":
+                valA = (a.merk || "").toLowerCase();
+                valB = (b.merk || "").toLowerCase();
+                break;
+              case "varian":
+                valA = (a.varian || "").toLowerCase();
+                valB = (b.varian || "").toLowerCase();
+                break;
+              case "hargaPokok":
+                valA = Number(a.hargaPokok || 0);
+                valB = Number(b.hargaPokok || 0);
+                break;
+              case "harga":
+                valA = Number(a.harga || 0);
+                valB = Number(b.harga || 0);
+                break;
+              case "stok":
+                valA = Number(a.stok || 0);
+                valB = Number(b.stok || 0);
+                break;
+              case "sku":
+                valA = (a.sku || "").toLowerCase();
+                valB = (b.sku || "").toLowerCase();
+                break;
+              default:
+                valA = (a.nama || "").toLowerCase();
+                valB = (b.nama || "").toLowerCase();
+            }
+
+            if (valA < valB) return sortDirection === "asc" ? -1 : 1;
+            if (valA > valB) return sortDirection === "asc" ? 1 : -1;
+            return 0;
+          });
+
+          const tableBody = document.getElementById("productTableBody");
+          tableBody.innerHTML = "";
+
+          filtered.forEach((p) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+          <td class="px-5 py-3">${p.kategori || "-"}</td>
+          <td class="px-5 py-3 font-medium">${p.nama}</td>
+          <td class="px-5 py-3">${p.merk || "-"}</td>
+          <td class="px-5 py-3">${p.varian || "-"}</td>
+          <td class="px-5 py-3 text-right">
+        ${p.hargaPokok > 0 ? "Rp " + Number(p.hargaPokok).toLocaleString("id-ID") : "-"}
+      </td>
+          <td class="px-5 py-3 text-right">
+            ${
+              p.harga > 0
+                ? "Rp " + Number(p.harga || 0).toLocaleString("id-ID")
+                : "-"
+            }
+            </td>
+          <td class="px-5 py-3 text-right">${p.stok || 0}</td>
+          <td class="px-5 py-3">${p.deskripsi || "-"}</td>
+          <td class="px-5 py-3">${p.sku || "-"}</td>
+          <td class="px-5 py-3">${p.barcode || "-"}</td>
+          <td class="px-5 py-3 text-center space-x-2">
+            <button onclick="editProduct('${p.nama}')" class="text-blue-600 hover:text-blue-800">Edit</button>
+            <button onclick="deleteProduct('${p.nama}')" class="text-red-600 hover:text-red-800">Hapus</button>
+          </td>
+        `;
+            tableBody.appendChild(row);
+          });
+
+          updatePagination(filtered.length);
+        } catch (err) {
+          console.error("Error loading products:", err);
+          document.getElementById("productTableBody").innerHTML =
+            '<tr><td colspan="10" class="text-center py-10 text-red-600">Gagal memuat data. Coba refresh.</td></tr>';
+        } finally {
+          loading.classList.add("hidden");
+        }
+      }
+
+      function updatePagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        document.getElementById("paginationInfo").textContent = `Menampilkan ${
+          totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1
+        } - ${Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} dari ${totalItems} produk`;
+
+        const buttonsDiv = document.getElementById("paginationButtons");
+        buttonsDiv.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        const prev = document.createElement("button");
+        prev.textContent = "Sebelumnya";
+        prev.className = `px-4 py-2 rounded-lg ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-primary-700 text-white hover:bg-primary-800"}`;
+        prev.disabled = currentPage === 1;
+        prev.onclick = () => {
+          if (currentPage > 1) {
+            currentPage--;
+            loadProducts();
+          }
+        };
+        buttonsDiv.appendChild(prev);
+
+        const next = document.createElement("button");
+        next.textContent = "Selanjutnya";
+        next.className = `px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-primary-700 text-white hover:bg-primary-800"}`;
+        next.disabled = currentPage === totalPages;
+        next.onclick = () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            loadProducts();
+          }
+        };
+        buttonsDiv.appendChild(next);
+      }
+
+      async function editProduct(nama) {
+        alert(`Edit produk: ${nama} (implementasi nanti)`);
+      }
+
+      async function deleteProduct(nama) {
+        if (confirm(`Yakin hapus ${nama}?`)) {
+          const db = await openDB();
+          const tx = db.transaction("products", "readwrite");
+          await tx.objectStore("products").delete(nama);
+          await tx.done;
+          loadProducts();
+        }
+      }
+
+      // Event listeners
+      document
+        .getElementById("searchInput")
+        ?.addEventListener("input", () => loadProducts());
+      document
+        .getElementById("filterKategori")
+        ?.addEventListener("change", (e) => loadProducts(e.target.value));
+
+      document.querySelectorAll("th[data-sort]").forEach((th) => {
+        th.addEventListener("click", () => {
+          const column = th.getAttribute("data-sort");
+          if (sortColumn === column) {
+            sortDirection = sortDirection === "asc" ? "desc" : "asc";
+          } else {
+            sortColumn = column;
+            sortDirection = "asc";
+          }
+          loadProducts(); // reload dengan sorting baru (nanti bisa di-optimasi kalau mau)
+        });
+      });
+
+      // Init
+      window.addEventListener("load", async () => {
+        await loadCategoriesIntoFilter();
+        await loadProducts();
+      });
+    </script>
+  </body>
+</html>

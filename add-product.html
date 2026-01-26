@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tambah Produk - Mahani Inventori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                900: "#1e3a8a", // biru tua sidebar
+                800: "#1e40af",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      select#kategori option {
+        color: #1f2937;
+      }
+      select#kategori option[value=""] {
+        color: #9ca3af; /* grey (text-gray-500) */
+        font-style: italic;
+      }
+      #interactive {
+        width: 100%;
+        height: 300px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      input#merk::-webkit-calendar-picker-indicator {
+        display: none !important;
+      }
+      input#merk::-webkit-outer-spin-button,
+      input#merk::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-pink-100 min-h-screen flex flex-col">
+    <!-- Wrapper utama -->
+    <div class="flex flex-1">
+      <!-- Header Mobile -->
+      <header
+        class="lg:hidden bg-gradient-to-r from-primary-900 to-primary-800 text-white p-4 flex items-center justify-between shadow-md fixed top-0 left-0 right-0 z-50"
+      >
+        <h1 class="text-2xl font-bold tracking-tight">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-sm text-blue-200 mt-1 opacity-80">
+          Sistem Inventori Modern
+        </p>
+        <button id="hamburgerBtn" class="text-3xl focus:outline-none">
+          ☰
+        </button>
+      </header>
+
+      <!-- SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-primary-900 to-primary-800 text-white flex flex-col shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:static lg:inset-auto"
+      >
+        <!-- Logo / Brand -->
+        <div class="p-6 border-b border-purple-700/30">
+          <h1 class="text-2xl font-bold tracking-tight">
+            MAHANI <span class="text-purple-300">INVENTORI</span>
+          </h1>
+          <p class="text-xs text-blue-200 mt-1 opacity-80">
+            Sistem Inventori Modern
+          </p>
+        </div>
+
+        <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+          <a
+            href="dashboard.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🏠</span> Dashboard
+          </a>
+          <a
+            href="cashier.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🖥️</span> Kasir
+          </a>
+          <a
+            href="manual-transaction.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🛒</span> Penjualan
+          </a>
+
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Produk
+          </div>
+
+          <a
+            href="search-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🔍</span> Cari Produk
+          </a>
+          <a
+            href="product-list.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📋</span> Daftar Produk
+          </a>
+          <a
+            href="restock-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📦</span> Restock Produk
+          </a>
+          <a
+            href="add-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 text-white font-medium transition"
+          >
+            <span class="text-xl mr-4">➕</span> Tambah Produk
+          </a>
+          <a
+            href="categories.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📁</span> Kelola Kategori
+          </a>
+
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Laporan & Riwayat
+          </div>
+
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📊</span> Laporan Keuangan
+          </a>
+          <a
+            href="transaction-history.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📜</span> Riwayat Transaksi
+          </a>
+        </nav>
+
+        <!-- Footer Sidebar -->
+        <div class="p-4 border-t border-purple-700/30 text-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p>© 2026 Mahani Inventori</p>
+              <p class="text-xs opacity-70">
+                Dibuat oleh Arunika Mahani Amertha
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Overlay gelap saat sidebar mobile terbuka -->
+      <div
+        id="overlay"
+        class="fixed inset-0 bg-black/50 hidden lg:hidden z-30"
+      ></div>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 flex flex-col">
+        <!-- Header -->
+        <header
+          class="bg-white shadow-sm p-4 flex justify-between items-center"
+        >
+          <h2 class="text-2xl font-semibold text-gray-800">
+            Tambah Produk Baru
+          </h2>
+          <a
+            href="dashboard.html"
+            class="px-4 py-2 bg-purple-300 text-white hover:bg-blue-600 rounded-lg transition"
+            >Kembali ke Dashboard</a
+          >
+        </header>
+
+        <!-- Form Tambah Produk -->
+        <div class="p-8 max-w-3xl mx-auto w-full">
+          <form
+            id="addProductForm"
+            class="space-y-6 bg-white border border-gray-200 p-8 rounded-2xl shadow-2xl"
+          >
+            <!-- Nama Produk -->
+            <div>
+              <label
+                for="nama"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Nama Produk *</label
+              >
+              <input
+                type="text"
+                id="nama"
+                required
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+                placeholder="Contoh: Album"
+              />
+            </div>
+
+            <!-- Merk / Brand -->
+            <div class="relative">
+              <label
+                for="merk"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Merk / Brand</label
+              >
+              <input
+                type="text"
+                id="merk"
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+                placeholder="Contoh: Nike, Samsung"
+              />
+              <div
+                id="brandDropdown"
+                class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 hidden overflow-y-auto max-h-40"
+              ></div>
+            </div>
+
+            <!-- Varian -->
+            <div>
+              <label
+                for="varian"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Varian (ukuran/warna/rasa dll)</label
+              >
+              <input
+                type="text"
+                id="varian"
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+                placeholder="Contoh: Putih, M, Pedas"
+              />
+            </div>
+
+            <!-- Kategori (WAJIB ADA) -->
+            <div>
+              <label
+                for="kategori"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Kategori *
+              </label>
+              <select
+                id="kategori"
+                required
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+              >
+                <option value="">Pilih Kategori</option>
+                <!-- Option akan diisi otomatis oleh JS loadCategoriesIntoSelect() -->
+              </select>
+            </div>
+
+            <!-- SKU (auto-generated, read-only) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >SKU (Otomatis)</label
+              >
+              <input
+                type="text"
+                id="sku"
+                readonly
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-gray-700 cursor-not-allowed"
+                placeholder="Akan digenerate saat simpan"
+              />
+            </div>
+
+            <!-- Barcode (input manual) -->
+            <div>
+              <label
+                for="barcode"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Barcode</label
+              >
+              <div class="flex gap-3">
+                <input
+                  type="text"
+                  id="barcode"
+                  class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+                  placeholder="Scan atau input manual"
+                />
+                <button
+                  type="button"
+                  id="scanBtn"
+                  class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition"
+                >
+                  Scan Barcode
+                </button>
+              </div>
+            </div>
+
+            <!-- Tambah setelah input harga jual -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Harga Pokok Total (dari supplier, opsional)</label
+              >
+              <input
+                type="number"
+                id="hargaPokokTotal"
+                min="0"
+                placeholder="Contoh: Rp 1.000.000 untuk 100 pcs"
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Harga Pokok per Unit (opsional)</label
+              >
+              <input
+                type="number"
+                id="hargaPokokPerUnit"
+                min="0"
+                placeholder="Contoh: Rp 10.000/pcs"
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+              />
+            </div>
+
+            <!-- Tampilkan preview HPP yang akan disimpan -->
+            <div
+              id="previewHPP"
+              class="mb-4 text-sm text-gray-600 italic hidden"
+            >
+              HPP yang akan disimpan: Rp <span id="hppValue">0</span> per unit
+            </div>
+
+            <!-- Harga & Stok (side by side) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  for="harga"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Harga Jual(Rp) *</label
+                >
+                <input
+                  type="number"
+                  id="harga"
+                  required
+                  min="0"
+                  class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <label
+                  for="stok"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Stok Awal *</label
+                >
+                <input
+                  type="number"
+                  id="stok"
+                  required
+                  min="0"
+                  class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <!-- Deskripsi -->
+            <div>
+              <label
+                for="deskripsi"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Deskripsi Produk</label
+              >
+              <textarea
+                id="deskripsi"
+                rows="4"
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white/15 transition"
+                placeholder="Masukkan deskripsi tambahan jika perlu"
+              ></textarea>
+            </div>
+
+            <!-- Upload Gambar (real) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Gambar Produk</label
+              >
+              <input
+                type="file"
+                id="gambarInput"
+                accept="image/*"
+                class="w-full px-4 py-3 bg-gray-400/10 border border-black/20 rounded-lg text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-primary-700 file:text-white hover:file:bg-primary-600 transition"
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                Format: JPG, PNG, max 2MB (opsional)
+              </p>
+
+              <!-- Preview Gambar -->
+              <div id="imagePreview" class="mt-4 hidden">
+                <img
+                  id="previewImg"
+                  class="w-full max-h-64 object-contain rounded-lg border border-gray-300"
+                  alt="Preview gambar produk"
+                />
+              </div>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="flex justify-end space-x-4 pt-6">
+              <a
+                href="dashboard.html"
+                class="px-8 py-3 bg-gray-400 hover:bg-primary-700 text-white font-medium rounded-lg shadow-lg transform transition hover:-translate-y-1"
+                >Batal</a
+              >
+              <button
+                type="submit"
+                class="px-8 py-3 bg-gray-400 hover:bg-primary-700 text-white font-medium rounded-lg shadow-lg transform transition hover:-translate-y-1"
+              >
+                Simpan Produk
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="p-8 max-w-3xl mx-auto w-full">
+          <!-- Notifikasi Sukses / Error -->
+          <div
+            id="success-message"
+            class="hidden bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-xl mb-8 text-center font-medium"
+          ></div>
+          <div
+            id="error-message"
+            class="hidden bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-8 text-center font-medium"
+          ></div>
+        </div>
+
+        <!-- Modal Scanner -->
+        <div
+          id="scannerModal"
+          class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50"
+        >
+          <div class="bg-white rounded-2xl p-6 w-full max-w-lg relative">
+            <button
+              id="closeScanner"
+              class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl"
+            >
+              &times;
+            </button>
+            <h3 class="text-xl font-bold text-gray-600 mb-4 text-center">
+              Scan Barcode
+            </h3>
+            <div id="interactive" class="w-full"></div>
+            <p class="text-sm text-gray-600 mt-4 text-center">
+              Arahkan kamera ke barcode. Deteksi otomatis.
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener("click", () => {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        });
+      }
+
+      if (closeSidebar || overlay) {
+        const closeMenu = () => {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        };
+
+        if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
+        if (overlay) overlay.addEventListener("click", closeMenu);
+      }
+
+      window.addEventListener("load", async () => {
+        const db = await idb.openDB("MahaniInventori", 3);
+        const isLoggedIn = await db.get("auth", "isLoggedIn");
+        if (isLoggedIn?.value !== true) {
+          window.location.href = "login.html";
+        }
+      });
+
+      async function openDB() {
+        return idb.openDB("MahaniInventori", 3, {
+          upgrade(db, oldVersion, newVersion, transaction) {
+            if (oldVersion < 3) {
+              // Migrasi data lama: tambah hargaPokok = 0 kalau belum ada
+              // Buat semua store yang dibutuhkan
+              if (!db.objectStoreNames.contains("products")) {
+                db.createObjectStore("products", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("categories")) {
+                db.createObjectStore("categories", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("transaksi")) {
+                db.createObjectStore("transaksi", { keyPath: "id" });
+              }
+              if (!db.objectStoreNames.contains("auth")) {
+                db.createObjectStore("auth", { keyPath: "key" });
+              }
+              if (db.objectStoreNames.contains("products")) {
+                const store = transaction.objectStore("products");
+                store.openCursor().onsuccess = (event) => {
+                  const cursor = event.target.result;
+                  if (cursor) {
+                    const item = cursor.value;
+                    if (!item.hargaPokok) {
+                      item.hargaPokok = 0;
+                      cursor.update(item);
+                    }
+                    cursor.continue();
+                  }
+                };
+              }
+            }
+          },
+        });
+      }
+
+      // Load kategori dari IndexedDB
+      async function loadCategoriesIntoSelect() {
+        const db = await openDB();
+        const categories = await db.getAll("categories");
+        const select = document.getElementById("kategori");
+        select.innerHTML = '<option value="">Pilih Kategori</option>';
+        categories.forEach((cat) => {
+          const option = document.createElement("option");
+          option.value = cat.nama;
+          option.textContent = cat.nama;
+          select.appendChild(option);
+        });
+        updateSelectColor();
+      }
+
+      // Update warna select
+      function updateSelectColor() {
+        const select = document.getElementById("kategori");
+        if (select) {
+          select.style.color = select.value === "" ? "#9ca3af" : "#1f2937";
+        }
+      }
+
+      // Fungsi baru: Load & setup suggestion merk unik dengan custom dropdown
+      async function setupBrandSuggestions() {
+        const db = await openDB();
+        const products = await db.getAll("products");
+
+        // Kumpulkan merk unik, simpan original case, tapi sort case-insensitive
+        const uniqueBrands = [
+          ...new Set(
+            products
+              .map((p) => p.merk?.trim())
+              .filter((merk) => merk && merk.length > 0),
+          ),
+        ].sort((a, b) =>
+          a.localeCompare(b, undefined, { sensitivity: "base" }),
+        );
+
+        const merkInput = document.getElementById("merk");
+        const dropdown = document.getElementById("brandDropdown");
+
+        merkInput.addEventListener("input", (e) => {
+          const query = e.target.value.trim().toLowerCase();
+          dropdown.innerHTML = ""; // Kosongkan dulu
+          dropdown.classList.add("hidden");
+
+          if (query.length < 1) return; // Jangan tampil kalau <1 huruf
+
+          // Filter brands yang match
+          const filtered = uniqueBrands.filter((brand) =>
+            brand.toLowerCase().includes(query),
+          );
+
+          if (filtered.length > 0) {
+            filtered.forEach((brand) => {
+              const item = document.createElement("div");
+              item.className = "px-4 py-2 cursor-pointer hover:bg-gray-100";
+              item.textContent = brand;
+              item.addEventListener("click", () => {
+                merkInput.value = brand;
+                dropdown.classList.add("hidden");
+              });
+              dropdown.appendChild(item);
+            });
+            dropdown.classList.remove("hidden");
+          }
+        });
+
+        // Hide dropdown kalau klik luar
+        document.addEventListener("click", (e) => {
+          if (!merkInput.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add("hidden");
+          }
+        });
+      }
+
+      async function addProduct() {
+        // Submit form → simpan ke IndexedDB dengan gambar real
+        document
+          .getElementById("addProductForm")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const nama = document.getElementById("nama")?.value.trim() || "";
+            const merk = document.getElementById("merk")?.value.trim() || "";
+            const varian =
+              document.getElementById("varian")?.value.trim() || "";
+            const kategori = document.getElementById("kategori")?.value || "";
+            const hargaStr =
+              document.getElementById("harga")?.value.trim() || "0";
+            const stokStr =
+              document.getElementById("stok")?.value.trim() || "0";
+            const deskripsi =
+              document.getElementById("deskripsi")?.value.trim() || "";
+            const sku = document.getElementById("sku")?.value.trim() || "";
+            const barcode =
+              document.getElementById("barcode")?.value.trim() || "";
+
+            if (!nama || !hargaStr) {
+              document.getElementById("error-message").textContent =
+                "Lengkapi field wajib: Nama, Harga, Stok, Kategori!";
+              document
+                .getElementById("error-message")
+                .classList.remove("hidden");
+              return;
+            }
+
+            const hargaBersih = parseInt(hargaStr.replace(/\./g, ""), 10);
+            if (isNaN(hargaBersih) || hargaBersih <= 0) {
+              document.getElementById("error-message").textContent =
+                "Harga harus lebih dari 0 dan berupa angka!";
+              document
+                .getElementById("error-message")
+                .classList.remove("hidden");
+              return;
+            }
+
+            const stok = parseInt(stokStr, 10);
+            if (isNaN(stok) || stok < 0) {
+              document.getElementById("error-message").textContent =
+                "Stok harus 0 atau lebih dan berupa angka!";
+              document
+                .getElementById("error-message")
+                .classList.remove("hidden");
+              return;
+            }
+
+            const hargaPokokTotal =
+              Number(document.getElementById("hargaPokokTotal").value) || 0;
+            const hargaPokokPerUnit =
+              Number(document.getElementById("hargaPokokPerUnit").value) || 0;
+
+            if (hargaPokokTotal > 0 && hargaPokokPerUnit > 0) {
+              alert(
+                "Isi salah satu saja: Harga Pokok Total atau Harga Pokok per Unit!",
+              );
+              return;
+            }
+
+            let hppPerUnit = 0;
+            if (hargaPokokPerUnit > 0) {
+              hppPerUnit = hargaPokokPerUnit;
+            } else if (hargaPokokTotal > 0) {
+              if (stok <= 0) {
+                alert("Masukkan stok awal agar bisa hitung HPP!");
+                return;
+              }
+              hppPerUnit = hargaPokokTotal / stok;
+            }
+
+            // Ambil gambar dari preview (base64)
+            let gambar = "";
+            const previewImg = document.getElementById("previewImg");
+            if (previewImg.src && previewImg.src.startsWith("data:image")) {
+              gambar = previewImg.src; // base64 real dari file yang dipilih
+            }
+
+            const produkBaru = {
+              nama,
+              merk,
+              varian,
+              kategori,
+              hargaPokok: hppPerUnit,
+              harga: hargaBersih,
+              stok,
+              deskripsi,
+              sku: sku || "AUTO-" + Date.now().toString().slice(-6),
+              barcode,
+              gambar, // base64 real atau default
+            };
+
+            try {
+              const db = await openDB();
+              const products = await db.getAll("products");
+
+              // Fungsi helper untuk banding case-insensitive
+              const normalize = (str) => (str || "").toLowerCase().trim();
+
+              // Cari apakah ada produk yang "sama" berdasarkan pola
+              const similarProduct = products.find(
+                (p) =>
+                  normalize(p.nama) === normalize(nama) &&
+                  normalize(p.merk) === normalize(merk) &&
+                  normalize(p.varian) === normalize(varian) &&
+                  normalize(p.kategori) === normalize(kategori) &&
+                  normalize(p.barcode) === normalize(barcode),
+              );
+
+              let shouldOverwrite = false;
+              if (similarProduct) {
+                // Produk mirip ditemukan → beri warning
+                if (
+                  !confirm(
+                    `Produk mirip dengan "${similarProduct.nama}" sudah ada (nama, merk, varian, kategori, barcode sama persis, ignore case). Overwrite data?`,
+                  )
+                ) {
+                  return; // Batal simpan
+                }
+                shouldOverwrite = true;
+              } else {
+                // Cek kalau nama sama tapi yang lain beda → simpan sebagai baru
+                const sameName = products.find(
+                  (p) => normalize(p.nama) === normalize(nama),
+                );
+                if (sameName) {
+                  // Nama sama, tapi setidaknya satu field beda (merk/kategori/barcode/harga) → lanjut sebagai baru
+                  // Tapi karena keyPath = nama, akan conflict → kita ubah jadi update (overwrite)
+                  if (
+                    !confirm(
+                      `Produk dengan nama "${nama}" sudah ada, tapi detail lain beda. Update data?`,
+                    )
+                  ) {
+                    return;
+                  }
+                  shouldOverwrite = true;
+                }
+              }
+
+              const tx = db.transaction("products", "readwrite");
+              const store = tx.objectStore("products");
+
+              if (shouldOverwrite) {
+                await store.put(produkBaru); // Overwrite jika mirip atau nama sama
+                document.getElementById("success-message").textContent =
+                  `Produk "${nama}" berhasil diupdate!`;
+              } else {
+                await store.add(produkBaru); // Tambah baru
+                document.getElementById("success-message").textContent =
+                  `Produk "${nama}" berhasil ditambahkan!`;
+              }
+
+              await tx.done;
+
+              document
+                .getElementById("success-message")
+                .classList.remove("hidden");
+              document.getElementById("error-message").classList.add("hidden");
+
+              setTimeout(() => {
+                this.reset();
+                document.getElementById("imagePreview").classList.add("hidden");
+                document
+                  .getElementById("success-message")
+                  .classList.add("hidden");
+                updateSelectColor();
+              }, 8000);
+            } catch (err) {
+              console.error("Gagal simpan produk:", err);
+              document.getElementById("error-message").textContent =
+                "Gagal menyimpan produk. Coba lagi.";
+              document
+                .getElementById("error-message")
+                .classList.remove("hidden");
+            }
+          });
+      }
+
+      // Scanner Modal
+      const scanBtn = document.getElementById("scanBtn");
+      const scannerModal = document.getElementById("scannerModal");
+      const closeScanner = document.getElementById("closeScanner");
+      const barcodeInput = document.getElementById("barcode");
+
+      scanBtn.addEventListener("click", () => {
+        scannerModal.classList.remove("hidden");
+        startScanner();
+      });
+
+      closeScanner.addEventListener("click", () => {
+        scannerModal.classList.add("hidden");
+        Quagga.stop();
+      });
+
+      function startScanner() {
+        Quagga.init(
+          {
+            inputStream: {
+              name: "Live",
+              type: "LiveStream",
+              target: document.querySelector("#interactive"),
+              constraints: {
+                facingMode: "environment",
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+              },
+            },
+            locator: { patchSize: "medium", halfSample: true },
+            numOfWorkers: navigator.hardwareConcurrency || 4,
+            frequency: 10,
+            decoder: {
+              readers: ["ean_reader", "upc_reader", "code_128_reader"],
+            },
+            locate: true,
+          },
+          (err) => {
+            if (err) {
+              console.error(err);
+              alert("Gagal akses kamera. Pastikan izin diberikan.");
+              scannerModal.classList.add("hidden");
+              return;
+            }
+            Quagga.start();
+          },
+        );
+
+        Quagga.onDetected((data) => {
+          const code = data.codeResult.code;
+          barcodeInput.value = code;
+          scannerModal.classList.add("hidden");
+          Quagga.stop();
+          alert("Barcode terdeteksi: " + code);
+        });
+      }
+
+      // Preview gambar saat dipilih
+      document
+        .getElementById("gambarInput")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+              // max 2MB
+              alert("Ukuran gambar maksimal 2MB!");
+              this.value = "";
+              document.getElementById("imagePreview").classList.add("hidden");
+              return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const preview = document.getElementById("imagePreview");
+              const img = document.getElementById("previewImg");
+              img.src = e.target.result;
+              preview.classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+          } else {
+            document.getElementById("imagePreview").classList.add("hidden");
+          }
+        });
+
+      // Init
+      window.addEventListener("load", async () => {
+        await loadCategoriesIntoSelect();
+        await setupBrandSuggestions();
+        updateSelectColor();
+        addProduct();
+      });
+
+      document
+        .getElementById("hargaPokokTotal")
+        .addEventListener("input", updatePreviewHPP);
+      document
+        .getElementById("hargaPokokPerUnit")
+        .addEventListener("input", updatePreviewHPP);
+      document
+        .getElementById("stok")
+        .addEventListener("input", updatePreviewHPP);
+
+      function updatePreviewHPP() {
+        const total =
+          Number(document.getElementById("hargaPokokTotal").value) || 0;
+        const perUnit =
+          Number(document.getElementById("hargaPokokPerUnit").value) || 0;
+        const stok = Number(document.getElementById("stok").value) || 0;
+
+        const previewEl = document.getElementById("previewHPP");
+        const valueEl = document.getElementById("hppValue");
+
+        if (perUnit > 0) {
+          valueEl.textContent = perUnit.toLocaleString("id-ID");
+          previewEl.classList.remove("hidden");
+        } else if (total > 0 && stok > 0) {
+          const hpp = total / stok;
+          valueEl.textContent =
+            hpp.toLocaleString("id-ID") + " (dari total / stok)";
+          previewEl.classList.remove("hidden");
+        } else {
+          previewEl.classList.add("hidden");
+        }
+      }
+    </script>
+  </body>
+</html>

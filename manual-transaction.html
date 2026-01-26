@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Penjualan - Mahani Inventori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                900: "#1e3a8a", // biru tua sidebar
+                800: "#1e40af",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-pink-100 min-h-screen flex flex-col">
+    <!-- Wrapper utama -->
+    <div class="flex flex-1">
+      <!-- Header Mobile -->
+      <header
+        class="lg:hidden bg-gradient-to-r from-primary-900 to-primary-800 text-white p-4 flex items-center justify-between shadow-md fixed top-0 left-0 right-0 z-50"
+      >
+        <h1 class="text-2xl font-bold tracking-tight">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-sm text-blue-200 mt-1 opacity-80">
+          Sistem Inventori Modern
+        </p>
+        <button id="hamburgerBtn" class="text-3xl focus:outline-none">
+          ☰
+        </button>
+      </header>
+
+      <!-- SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-primary-900 to-primary-800 text-white flex flex-col shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:static lg:inset-auto"
+      >
+        <div class="p-6 border-b border-purple-700/30">
+          <h1 class="text-2xl font-bold tracking-tight">
+            MAHANI <span class="text-purple-300">INVENTORI</span>
+          </h1>
+          <p class="text-xs text-blue-200 mt-1 opacity-80">
+            Sistem Inventori Modern
+          </p>
+        </div>
+
+        <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+          <a
+            href="dashboard.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🏠</span> Dashboard
+          </a>
+          <a
+            href="cashier.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🖥️</span> Kasir
+          </a>
+          <a
+            href="manual-transaction.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 text-white font-medium transition"
+          >
+            <span class="text-xl mr-4">🛒</span> Penjualan
+          </a>
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Produk
+          </div>
+
+          <a
+            href="search-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🔍</span> Cari Produk
+          </a>
+          <a
+            href="product-list.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📋</span> Daftar Produk
+          </a>
+          <a
+            href="restock-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📦</span> Restock Produk
+          </a>
+          <a
+            href="add-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">➕</span> Tambah Produk
+          </a>
+          <a
+            href="categories.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📁</span> Kelola Kategori
+          </a>
+
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Laporan & Riwayat
+          </div>
+
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📊</span> Laporan Keuangan
+          </a>
+          <a
+            href="transaction-history.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📜</span> Riwayat Transaksi
+          </a>
+        </nav>
+
+        <!-- Footer Sidebar -->
+        <div class="p-4 border-t border-purple-700/30 text-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p>© 2026 Mahani Inventori</p>
+              <p class="text-xs opacity-70">
+                Dibuat oleh Arunika Mahani Amertha
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Overlay gelap saat sidebar mobile terbuka -->
+      <div
+        id="overlay"
+        class="fixed inset-0 bg-black/50 hidden lg:hidden z-30"
+      ></div>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 flex flex-col">
+        <header
+          class="bg-white shadow-sm p-4 flex justify-between items-center"
+        >
+          <h2 class="text-2xl font-semibold text-gray-800">Penjualan</h2>
+          <a
+            href="dashboard.html"
+            class="px-4 py-2 bg-purple-300 text-white hover:bg-blue-600 rounded-lg transition"
+            >Kembali ke Dashboard
+          </a>
+        </header>
+
+        <div class="p-8 max-w-3xl mx-auto w-full">
+          <!-- Notifikasi Sukses / Error -->
+          <div
+            id="success-message"
+            class="hidden bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-xl mb-8 text-center font-medium"
+          ></div>
+          <div
+            id="error-message"
+            class="hidden bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-8 text-center font-medium"
+          ></div>
+
+          <div class="mx-auto bg-white p-6 rounded-2xl shadow-xl">
+            <h2 class="text-2xl font-bold mb-6">
+              Transaksi E-commerce/Lainnya
+            </h2>
+            <form id="manualForm">
+              <label class="block mb-2">Sumber Transaksi:</label>
+              <input
+                type="text"
+                id="sumber"
+                placeholder="e.g., Shopee Order #123"
+                class="w-full p-3 border rounded mb-4"
+              />
+
+              <label class="block mb-2">Produk:</label>
+              <table id="productTable" class="w-full mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left">Nama Produk</th>
+                    <th class="text-left">Qty</th>
+                    <th class="text-left">Harga</th>
+                    <th class="text-left">Subtotal</th>
+                    <th></th>
+                    <!-- Kolom action -->
+                  </tr>
+                </thead>
+                <tbody id="productRows">
+                  <!-- Baris pertama (default) -->
+                  <tr class="product-row">
+                    <td class="relative">
+                      <input
+                        type="text"
+                        class="namaProduk w-full p-3 border rounded"
+                        placeholder="Nama produk"
+                      />
+                      <div
+                        class="productDropdown absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 hidden overflow-y-auto max-h-40"
+                      ></div>
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="qty w-full p-3 border rounded"
+                        min="1"
+                        value="1"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="harga w-full p-3 border rounded"
+                        min="0"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="subtotal w-full p-3 border rounded bg-gray-100"
+                        readonly
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        class="removeRow text-red-600 hover:text-red-800"
+                      >
+                        Hapus
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button
+                type="button"
+                id="addRow"
+                class="bg-green-600 text-white py-2 px-4 rounded mb-4"
+              >
+                Tambah Produk
+              </button>
+              <button
+                type="button"
+                id="scanBarcodeBtn"
+                class="bg-blue-600 text-white py-2 px-4 rounded mb-4"
+              >
+                Scan Barcode
+              </button>
+              <!-- Modal scanner (copy dari add-product) -->
+              <div
+                id="scannerModal"
+                class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50"
+              >
+                <div class="bg-white rounded-2xl p-6 w-full max-w-lg relative">
+                  <button
+                    id="closeScanner"
+                    class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl"
+                  >
+                    &times;
+                  </button>
+                  <h3 class="text-xl font-bold text-gray-600 mb-4 text-center">
+                    Scan Barcode
+                  </h3>
+                  <div
+                    id="interactive"
+                    class="w-full h-64 border-2 border-gray-400 rounded-lg overflow-hidden"
+                  ></div>
+                  <p class="text-sm text-gray-600 mt-4 text-center">
+                    Arahkan kamera ke barcode. Deteksi otomatis.
+                  </p>
+                </div>
+              </div>
+
+              <label class="block mb-2">Diskon (Rp):</label>
+              <input
+                type="number"
+                id="diskonNominal"
+                min=""
+                value=""
+                class="w-full p-3 border rounded mb-4"
+                placeholder="Contoh: 5000"
+              />
+
+              <!-- TAMBAHAN: Total -->
+              <label class="block mb-2">Total:</label>
+              <input
+                type="text"
+                id="total"
+                class="w-full p-3 border rounded mb-4 bg-gray-100"
+                readonly
+                value="0"
+              />
+
+              <label class="block mb-2">Metode Bayar:</label>
+              <select id="metodeBayar" class="w-full p-3 border rounded mb-4">
+                <option>QRIS</option>
+                <option>Transfer</option>
+                <option>Debit/Kredit</option>
+                <option>Lainnya</option>
+              </select>
+
+              <button
+                type="submit"
+                class="w-full bg-blue-700 text-white py-3 rounded-lg hover:bg-primary-800"
+              >
+                Simpan Transaksi
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener("click", () => {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        });
+      }
+
+      if (closeSidebar || overlay) {
+        const closeMenu = () => {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        };
+
+        if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
+        if (overlay) overlay.addEventListener("click", closeMenu);
+      }
+
+      async function openDB() {
+        return idb.openDB("MahaniInventori", 3, {
+          upgrade(db, oldVersion, newVersion, transaction) {
+            if (oldVersion < 3) {
+              if (!db.objectStoreNames.contains("products")) {
+                db.createObjectStore("products", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("categories")) {
+                db.createObjectStore("categories", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("transaksi")) {
+                db.createObjectStore("transaksi", { keyPath: "id" });
+              }
+              if (!db.objectStoreNames.contains("auth")) {
+                db.createObjectStore("auth", { keyPath: "key" });
+              }
+              if (db.objectStoreNames.contains("products")) {
+                const store = transaction.objectStore("products");
+                store.openCursor().onsuccess = (event) => {
+                  const cursor = event.target.result;
+                  if (cursor) {
+                    const item = cursor.value;
+                    if (!item.hargaPokok) {
+                      item.hargaPokok = 0;
+                      cursor.update(item);
+                    }
+                    cursor.continue();
+                  }
+                };
+              }
+            }
+          },
+        });
+      }
+
+      // Autocomplete nama produk
+      async function setupProductSuggestions(input, dropdown) {
+        const db = await openDB();
+        const products = await db.getAll("products");
+
+        const uniqueNames = [
+          ...new Set(products.map((p) => p.nama?.trim()).filter(Boolean)),
+        ].sort((a, b) => a.localeCompare(b));
+
+        input.addEventListener("input", (e) => {
+          const query = e.target.value.trim().toLowerCase();
+          dropdown.innerHTML = "";
+          dropdown.classList.add("hidden");
+
+          if (query.length < 1) return;
+
+          const filtered = uniqueNames.filter((name) =>
+            name.toLowerCase().includes(query),
+          );
+
+          if (filtered.length > 0) {
+            filtered.forEach((name) => {
+              const item = document.createElement("div");
+              item.className = "px-4 py-2 cursor-pointer hover:bg-gray-100";
+              item.textContent = name;
+              item.addEventListener("click", async () => {
+                input.value = name;
+                dropdown.classList.add("hidden");
+                const prod = await db.get("products", name);
+                if (prod) {
+                  input.closest("tr").querySelector(".harga").value =
+                    prod.harga || 0;
+                  updateSubtotal(input.closest("tr"));
+                }
+              });
+              dropdown.appendChild(item);
+            });
+            dropdown.classList.remove("hidden");
+          }
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add("hidden");
+          }
+        });
+      }
+
+      // Hitung subtotal per baris
+      function updateSubtotal(row) {
+        const qty = Number(row.querySelector(".qty").value) || 0;
+        const harga = Number(row.querySelector(".harga").value) || 0;
+        row.querySelector(".subtotal").value = (qty * harga).toLocaleString(
+          "id-ID",
+        );
+        updateTotal();
+      }
+
+      // Hitung total semua baris + diskon nominal
+      function updateTotal() {
+        let subtotal = 0;
+        document.querySelectorAll(".subtotal").forEach((sub) => {
+          subtotal += Number(sub.value.replace(/\./g, "")) || 0;
+        });
+
+        const diskonNominal =
+          Number(document.getElementById("diskonNominal").value) || 0;
+
+        // Validasi diskon tidak boleh lebih dari subtotal
+        if (diskonNominal > subtotal) {
+          alert("Diskon tidak boleh melebihi subtotal!");
+          document.getElementById("diskonNominal").value = subtotal;
+          return;
+        }
+
+        const total = subtotal - diskonNominal;
+        document.getElementById("total").value = total.toLocaleString("id-ID");
+      }
+
+      // Init semua fitur
+      window.addEventListener("load", async () => {
+        const db = await openDB();
+
+        // Setup autocomplete untuk baris pertama
+        const firstRow = document.querySelector(".product-row");
+        await setupProductSuggestions(
+          firstRow.querySelector(".namaProduk"),
+          firstRow.querySelector(".productDropdown"),
+        );
+
+        // Event listener qty/harga per baris (delegation)
+        document
+          .getElementById("productTable")
+          .addEventListener("input", (e) => {
+            const target = e.target;
+            const row = target.closest("tr");
+            if (!row) return;
+
+            if (
+              target.classList.contains("qty") ||
+              target.classList.contains("harga")
+            ) {
+              updateSubtotal(row);
+            }
+          });
+
+        // Event diskon nominal
+        document
+          .getElementById("diskonNominal")
+          .addEventListener("input", updateTotal);
+
+        // Tombol tambah baris
+        document
+          .getElementById("addRow")
+          .addEventListener("click", async () => {
+            const newRow = firstRow.cloneNode(true);
+            newRow.querySelector(".namaProduk").value = "";
+            newRow.querySelector(".qty").value = 1;
+            newRow.querySelector(".harga").value = "";
+            newRow.querySelector(".subtotal").value = "";
+
+            await setupProductSuggestions(
+              newRow.querySelector(".namaProduk"),
+              newRow.querySelector(".productDropdown"),
+            );
+
+            document.getElementById("productRows").appendChild(newRow);
+            updateSubtotal(newRow);
+            updateTotal();
+          });
+
+        // Tombol hapus baris
+        document
+          .getElementById("productTable")
+          .addEventListener("click", (e) => {
+            if (e.target.classList.contains("removeRow")) {
+              const row = e.target.closest("tr");
+              if (document.querySelectorAll(".product-row").length > 1) {
+                row.remove();
+                updateTotal();
+              }
+            }
+          });
+      });
+
+      // === FITUR SCAN BARCODE & INPUT MANUAL BARCODE ===
+      const scanBtn = document.getElementById("scanBarcodeBtn");
+      const scannerModal = document.getElementById("scannerModal");
+      const closeScanner = document.getElementById("closeScanner");
+      let currentBarcodeInput = null;
+
+      if (scanBtn && scannerModal && closeScanner) {
+        scanBtn.addEventListener("click", () => {
+          currentBarcodeInput = document.querySelector(
+            ".product-row:last-child .barcode",
+          );
+          scannerModal.classList.remove("hidden");
+          startScanner();
+        });
+
+        closeScanner.addEventListener("click", () => {
+          scannerModal.classList.add("hidden");
+          Quagga.stop();
+        });
+      }
+
+      function startScanner() {
+        Quagga.init(
+          {
+            inputStream: {
+              name: "Live",
+              type: "LiveStream",
+              target: document.querySelector("#interactive"),
+              constraints: {
+                facingMode: "environment",
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                frameRate: { ideal: 30 },
+              },
+            },
+            locator: { patchSize: "medium", halfSample: true },
+            numOfWorkers: navigator.hardwareConcurrency || 4,
+            frequency: 10,
+            decoder: {
+              readers: ["ean_reader", "upc_reader", "code_128_reader"],
+            },
+            locate: true,
+          },
+          (err) => {
+            if (err) {
+              console.error("Quagga init error:", err);
+              alert("Gagal akses kamera. Pastikan izin kamera diizinkan.");
+              scannerModal.classList.add("hidden");
+              return;
+            }
+            Quagga.start();
+          },
+        );
+
+        Quagga.onDetected(async (data) => {
+          const code = data.codeResult.code;
+          if (currentBarcodeInput) {
+            currentBarcodeInput.value = code;
+
+            const db = await openDB();
+            const products = await db.getAll("products");
+            const prod = products.find((p) => p.barcode === code);
+
+            if (prod) {
+              const row = currentBarcodeInput.closest("tr");
+              row.querySelector(".namaProduk").value = prod.nama;
+              row.querySelector(".harga").value = prod.harga || 0;
+              updateSubtotal(row);
+            } else {
+              alert("Barcode tidak ditemukan di database.");
+            }
+          }
+          scannerModal.classList.add("hidden");
+          Quagga.stop();
+        });
+      }
+
+      // Auto-fill saat input barcode manual
+      document
+        .getElementById("productTable")
+        .addEventListener("input", async (e) => {
+          if (e.target.classList.contains("barcode")) {
+            const code = e.target.value.trim();
+            if (code.length > 0) {
+              // minimal panjang barcode
+              const db = await openDB();
+              const products = await db.getAll("products");
+              const prod = products.find((p) => p.barcode === code);
+              if (prod) {
+                const row = e.target.closest("tr");
+                row.querySelector(".namaProduk").value = prod.nama;
+                row.querySelector(".harga").value = prod.harga || 0;
+                updateSubtotal(row);
+              }
+            }
+          }
+        });
+
+      // Submit form
+      document
+        .getElementById("manualForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const db = await openDB();
+          const tx = db.transaction(["transaksi", "products"], "readwrite");
+
+          const items = [];
+          let subtotal = 0;
+          const rows = document.querySelectorAll(".product-row");
+          for (let row of rows) {
+            const nama = row.querySelector(".namaProduk").value.trim();
+            const qty = Number(row.querySelector(".qty").value);
+            const harga = Number(row.querySelector(".harga").value);
+            const itemSubtotal = qty * harga;
+
+            if (!nama || qty <= 0 || harga <= 0) {
+              document.getElementById("error-message").textContent =
+                "Lengkapi nama, qty, dan harga untuk semua produk!";
+              document
+                .getElementById("error-message")
+                .classList.remove("hidden");
+              return;
+            }
+
+            items.push({
+              nama,
+              varian: "",
+              qty,
+              harga,
+              subtotal: itemSubtotal,
+            });
+            subtotal += itemSubtotal;
+
+            const prod = await tx.objectStore("products").get(nama);
+            if (prod) {
+              if (prod.stok < qty) {
+                document.getElementById("error-message").textContent =
+                  `Stok "${nama}" hanya ${prod.stok}, kurang dari qty ${qty}!`;
+                document
+                  .getElementById("error-message")
+                  .classList.remove("hidden");
+                return;
+              }
+              prod.stok -= qty;
+              await tx.objectStore("products").put(prod);
+            }
+          }
+
+          const diskonNominal =
+            Number(document.getElementById("diskonNominal").value) || 0;
+          const total = subtotal - diskonNominal;
+
+          const transaksi = {
+            id: "TX-" + Date.now(),
+            tanggal: new Date().toISOString(),
+            items,
+            subtotal,
+            diskonNominal,
+            total,
+            metodeBayar: document.getElementById("metodeBayar").value,
+            uangDibayarkan: null,
+            sumber: document.getElementById("sumber").value,
+            status: "completed",
+          };
+
+          await tx.objectStore("transaksi").add(transaksi);
+          await tx.done;
+
+          document.getElementById("success-message").textContent =
+            "Transaksi berhasil disimpan! Stok dikurangi.";
+          document.getElementById("success-message").classList.remove("hidden");
+          document.getElementById("error-message").classList.add("hidden");
+
+          setTimeout(() => {
+            window.location.href = "transaction-history.html";
+          }, 2000);
+        });
+    </script>
+  </body>
+</html>

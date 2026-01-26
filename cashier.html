@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kasir - Mahani Inventori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                900: "#1e3a8a", // biru tua sidebar
+                800: "#1e40af",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <style>
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #strukPrint,
+      #strukPrint * {
+        visibility: visible;
+      }
+      #strukPrint {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 80mm; /* lebar thermal printer */
+        margin: 0;
+        padding: 10mm;
+        font-size: 12pt;
+        font-family: "Courier New", monospace; /* font monospaced mirip struk */
+      }
+    }
+
+    /* Tombol & input lebih mudah disentuh di mobile */
+    @media (max-width: 1024px) {
+      button,
+      input,
+      select,
+      a {
+        min-height: 48px;
+        min-width: 48px;
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+      }
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+  <body class="bg-pink-100 text-gray-800 min-h-screen flex">
+    <!-- Wrapper utama -->
+    <div class="flex flex-1">
+      <!-- Header Mobile -->
+      <header
+        class="lg:hidden bg-gradient-to-r from-primary-900 to-primary-800 text-white p-4 flex items-center justify-between shadow-md fixed top-0 left-0 right-0 z-50"
+      >
+        <h1 class="text-2xl font-bold tracking-tight">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-sm text-blue-200 mt-1 opacity-80">
+          Sistem Inventori Modern
+        </p>
+        <button id="hamburgerBtn" class="text-3xl focus:outline-none">
+          ☰
+        </button>
+      </header>
+
+      <!-- SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-primary-900 to-primary-800 text-white flex flex-col shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:static lg:inset-auto"
+      >
+        <div class="p-6 border-b border-purple-700/30">
+          <h1 class="text-2xl font-bold tracking-tight">
+            MAHANI <span class="text-purple-300">INVENTORI</span>
+          </h1>
+          <p class="text-xs text-blue-200 mt-1 opacity-80">
+            Sistem Inventori Modern
+          </p>
+        </div>
+
+        <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+          <a
+            href="dashboard.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🏠</span> Dashboard
+          </a>
+          <a
+            href="cashier.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 text-white font-medium transition"
+          >
+            <span class="text-xl mr-4">🖥️</span> Kasir
+          </a>
+          <a
+            href="manual-transaction.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🛒</span> Penjualan
+          </a>
+
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Produk
+          </div>
+
+          <a
+            href="search-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">🔍</span> Cari Produk
+          </a>
+          <a
+            href="product-list.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📋</span> Daftar Produk
+          </a>
+          <a
+            href="restock-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📦</span> Restock Produk
+          </a>
+          <a
+            href="add-product.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">➕</span> Tambah Produk
+          </a>
+          <a
+            href="categories.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📁</span> Kelola Kategori
+          </a>
+
+          <div
+            class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+          >
+            Laporan & Riwayat
+          </div>
+
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📊</span> Laporan Keuangan
+          </a>
+          <a
+            href="transaction-history.html"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+          >
+            <span class="text-xl mr-4">📜</span> Riwayat Transaksi
+          </a>
+        </nav>
+
+        <!-- Footer Sidebar -->
+        <div class="p-4 border-t border-purple-700/30 text-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p>© 2026 Mahani Inventori</p>
+              <p class="text-xs opacity-70">
+                Dibuat oleh Arunika Mahani Amertha
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Overlay gelap saat sidebar mobile terbuka -->
+      <div
+        id="overlay"
+        class="fixed inset-0 bg-black/50 hidden lg:hidden z-30"
+      ></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col lg:flex-row">
+        <!-- Bagian Kiri: Produk & Search -->
+        <div class="flex-1 p-6 bg-white border-r border-gray-200">
+          <h2 class="text-2xl font-bold mb-6">Pilih Produk</h2>
+          <!-- Tombol Scanner -->
+          <button
+            id="scanBtn"
+            class="bg-primary-700 text-white px-6 py-3 rounded-lg hover:bg-primary-800 transition flex items-center gap-2"
+          >
+            <span class="text-xl">📷</span> Scan Barcode
+          </button>
+
+          <!-- Modal Scanner (hidden dulu) -->
+          <div
+            id="scannerModal"
+            class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-50"
+          >
+            <div class="bg-white rounded-2xl p-6 w-full max-w-lg mx-4">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Scan Barcode</h3>
+                <button
+                  id="closeScanner"
+                  class="text-3xl text-gray-600 hover:text-gray-800"
+                >
+                  &times;
+                </button>
+              </div>
+              <div
+                id="scannerContainer"
+                class="relative w-full h-64 bg-gray-200 rounded-lg overflow-hidden"
+              >
+                <video
+                  id="scannerVideo"
+                  autoplay
+                  playsinline
+                  class="w-full h-full object-cover"
+                ></video>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div
+                    class="border-4 border-red-500 w-3/4 h-1/2 rounded-lg"
+                  ></div>
+                </div>
+              </div>
+              <p class="text-center text-sm text-gray-500 mt-4">
+                Arahkan barcode ke kamera...
+              </p>
+            </div>
+          </div>
+
+          <!-- Search Bar -->
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Cari nama produk..."
+            class="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700"
+          />
+
+          <!-- Grid Produk -->
+          <div
+            id="productGrid"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+          ></div>
+        </div>
+
+        <!-- Bagian Kanan: Cart -->
+        <div
+          class="w-full lg:w-96 bg-gray-50 p-4 sm:p-6 flex flex-col lg:border-l border-gray-200"
+        >
+          <h2 class="text-2xl font-bold mb-6">Keranjang</h2>
+
+          <!-- Daftar Item di Cart -->
+          <div id="cartItems" class="flex-1 overflow-y-auto mb-6"></div>
+
+          <!-- Total & Bayar -->
+          <div class="border-t pt-4">
+            <div class="flex justify-between mb-2">
+              <span class="font-medium">Subtotal</span>
+              <span id="subtotal" class="font-bold">Rp 0</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <span class="font-medium">Diskon (%)</span>
+              <input
+                type="number"
+                id="diskon"
+                min="0"
+                max="100"
+                value="0"
+                class="w-20 text-right border rounded px-2"
+              />
+            </div>
+            <div class="flex justify-between text-xl font-bold mb-4">
+              <span>Total</span>
+              <span id="total" class="text-primary-700">Rp 0</span>
+            </div>
+
+            <!-- Metode Bayar -->
+            <select id="metodeBayar" class="w-full p-3 mb-4 border rounded-lg">
+              <option>Pilih Metode Pembayaran</option>
+              <option>Cash</option>
+              <option>QRIS</option>
+              <option>Transfer</option>
+              <option>Debit/Kredit</option>
+            </select>
+
+            <!-- Uang Dibayarkan & Kembalian (KHUSUS CASH) -->
+            <div id="cashPaymentSection" class="hidden mt-4 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Uang Dibayarkan</span>
+                <input
+                  type="number"
+                  id="uangDibayarkan"
+                  min="0"
+                  placeholder="Masukkan nominal"
+                  class="w-40 text-right border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-700"
+                />
+              </div>
+              <div class="flex justify-between text-lg font-bold">
+                <span>Kembalian</span>
+                <span id="kembalian" class="text-green-600">Rp 0</span>
+              </div>
+            </div>
+
+            <div class="flex gap-4 mt-6">
+              <button
+                onclick="clearCart()"
+                class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700"
+              >
+                Batal
+              </button>
+              <button
+                onclick="prosesBayar()"
+                class="flex-1 bg-primary-700 text-white py-3 rounded-lg hover:bg-primary-800"
+              >
+                Bayar
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener("click", () => {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        });
+      }
+
+      if (closeSidebar || overlay) {
+        const closeMenu = () => {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        };
+
+        if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
+        if (overlay) overlay.addEventListener("click", closeMenu);
+      }
+
+      // Cek login
+      window.addEventListener("load", async () => {
+        const db = await openDB();
+        const isLoggedIn = await db.get("auth", "isLoggedIn");
+        if (isLoggedIn?.value !== true) {
+          window.location.href = "login.html";
+        }
+        await loadProducts();
+        renderCart();
+      });
+
+      async function openDB() {
+        return idb.openDB("MahaniInventori", 3, {
+          upgrade(db, oldVersion, newVersion, transaction) {
+            if (oldVersion < 3) {
+              // Migrasi data lama: tambah hargaPokok = 0 kalau belum ada
+              // Buat semua store yang dibutuhkan
+              if (!db.objectStoreNames.contains("products")) {
+                db.createObjectStore("products", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("categories")) {
+                db.createObjectStore("categories", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("transaksi")) {
+                db.createObjectStore("transaksi", { keyPath: "id" });
+              }
+              if (!db.objectStoreNames.contains("auth")) {
+                db.createObjectStore("auth", { keyPath: "key" });
+              }
+              if (db.objectStoreNames.contains("products")) {
+                const store = transaction.objectStore("products");
+                store.openCursor().onsuccess = (event) => {
+                  const cursor = event.target.result;
+                  if (cursor) {
+                    const item = cursor.value;
+                    if (!item.hargaPokok) {
+                      item.hargaPokok = 0;
+                      cursor.update(item);
+                    }
+                    cursor.continue();
+                  }
+                };
+              }
+            }
+          },
+        });
+      }
+
+      let cart = [];
+      let lastTransaksi = null;
+
+      async function loadProducts() {
+        const db = await openDB();
+        const products = await db.getAll("products");
+
+        const grid = document.getElementById("productGrid");
+        if (!grid) return console.error("Element #productGrid tidak ditemukan");
+
+        grid.innerHTML = products
+          .map(
+            (p) => `
+      <div onclick="addToCart('${p.nama.replace(/'/g, "\\'")}', ${p.harga}, '${(p.varian || "").replace(/'/g, "\\'")}')"
+           class="bg-white border rounded-xl p-4 cursor-pointer hover:shadow-lg transition flex flex-col">
+        <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden mb-2 relative">
+          ${
+            p.gambar && p.gambar.startsWith("data:image")
+              ? `<img src="${p.gambar}" alt="${p.nama}" class="w-full h-full object-cover">`
+              : `<div class="flex items-center justify-center h-full text-gray-500 text-xs font-medium">Belum ada foto</div>`
+          }
+        </div>
+        <h3 class="font-semibold">${p.nama}</h3>
+        <p class="text-sm text-gray-600">${p.merk || ""} - ${p.varian || "-"}</p>
+        <p class="text-lg font-bold text-primary-700 mt-2">Rp ${Number(p.harga).toLocaleString("id-ID")}</p>
+        <p class="text-sm text-gray-500">Stok: ${p.stok}</p>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function addToCart(nama, harga, varian) {
+        const existing = cart.find((item) => item.nama === nama);
+        if (existing) {
+          existing.qty++;
+        } else {
+          cart.push({ nama, harga: Number(harga), qty: 1, varian });
+        }
+        renderCart();
+      }
+
+      function updateQty(index, delta) {
+        cart[index].qty = Math.max(1, cart[index].qty + delta);
+        renderCart();
+      }
+
+      function removeFromCart(index) {
+        cart.splice(index, 1);
+        renderCart();
+      }
+
+      function renderCart() {
+        const container = document.getElementById("cartItems");
+        if (!container)
+          return console.error("Element #cartItems tidak ditemukan");
+
+        container.innerHTML =
+          cart.length === 0
+            ? '<p class="text-center text-gray-500 py-10">Keranjang kosong</p>'
+            : cart
+                .map(
+                  (item, i) => `
+          <div class="flex justify-between items-center py-3 border-b">
+            <div>
+              <p class="font-medium">${item.nama} ${item.varian ? "- " + item.varian : ""}</p>
+              <p class="text-sm text-gray-600">Rp ${item.harga.toLocaleString("id-ID")} x ${item.qty}</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="updateQty(${i}, -1)" class="px-3 py-1 bg-gray-200 rounded">-</button>
+              <span>${item.qty}</span>
+              <button onclick="updateQty(${i}, 1)" class="px-3 py-1 bg-gray-200 rounded">+</button>
+              <button onclick="removeFromCart(${i})" class="text-red-600">Hapus</button>
+            </div>
+          </div>
+        `,
+                )
+                .join("");
+
+        const subtotal = cart.reduce(
+          (sum, item) => sum + item.harga * item.qty,
+          0,
+        );
+        const diskonPersen =
+          Number(document.getElementById("diskon").value) || 0;
+        const diskonNominal = subtotal * (diskonPersen / 100);
+        const total = subtotal - diskonNominal;
+
+        document.getElementById("subtotal").textContent =
+          "Rp " + subtotal.toLocaleString("id-ID");
+        document.getElementById("total").textContent =
+          "Rp " + Math.round(total).toLocaleString("id-ID");
+      }
+
+      function clearCart() {
+        if (confirm("Kosongkan keranjang?")) {
+          cart = [];
+          renderCart();
+          document.getElementById("printSection").classList.add("hidden");
+        }
+      }
+
+      document
+        .getElementById("metodeBayar")
+        .addEventListener("change", function () {
+          const cashSection = document.getElementById("cashPaymentSection");
+          if (this.value === "Cash") {
+            cashSection.classList.remove("hidden");
+            setTimeout(
+              () => document.getElementById("uangDibayarkan").focus(),
+              100,
+            );
+          } else {
+            cashSection.classList.add("hidden");
+            document.getElementById("uangDibayarkan").value = "";
+            document.getElementById("kembalian").textContent = "Rp 0";
+            document.getElementById("kembalian").className = "text-green-600";
+          }
+        });
+
+      document
+        .getElementById("uangDibayarkan")
+        .addEventListener("input", function () {
+          const total = parseRupiah(
+            document.getElementById("total").textContent,
+          );
+          const dibayarkan = parseFloat(this.value) || 0;
+          const kembalian = dibayarkan - total;
+
+          const kembalianEl = document.getElementById("kembalian");
+          if (kembalian >= 0) {
+            kembalianEl.textContent = "Rp " + kembalian.toLocaleString("id-ID");
+            kembalianEl.className = "text-green-600 font-bold";
+          } else {
+            kembalianEl.textContent =
+              "Kurang Rp " + Math.abs(kembalian).toLocaleString("id-ID");
+            kembalianEl.className = "text-red-600 font-bold";
+          }
+        });
+
+      function parseRupiah(str) {
+        if (!str) return 0;
+        return (
+          parseFloat(
+            str.replace(/Rp\s*/g, "").replace(/\./g, "").replace(/,/g, "."),
+          ) || 0
+        );
+      }
+
+      async function saveTransaksiAndUpdateStock() {
+        const db = await openDB();
+        const tx = db.transaction(["transaksi", "products"], "readwrite");
+
+        const transaksi = {
+          id: "TX-" + Date.now(),
+          tanggal: new Date().toISOString(),
+          items: cart.map((item) => ({
+            nama: item.nama,
+            varian: item.varian,
+            qty: item.qty,
+            harga: item.harga,
+            subtotal: item.harga * item.qty,
+          })),
+          subtotal: parseRupiah(
+            document.getElementById("subtotal").textContent,
+          ),
+          diskonPersen: Number(document.getElementById("diskon").value) || 0,
+          total: parseRupiah(document.getElementById("total").textContent),
+          metodeBayar: document.getElementById("metodeBayar").value,
+          uangDibayarkan:
+            document.getElementById("metodeBayar").value === "Cash"
+              ? parseFloat(document.getElementById("uangDibayarkan").value) || 0
+              : null,
+          status: "completed",
+        };
+
+        await tx.objectStore("transaksi").add(transaksi);
+
+        const prodStore = tx.objectStore("products");
+        for (const item of cart) {
+          const prod = await prodStore.get(item.nama);
+          if (prod) {
+            prod.stok = Math.max(0, Number(prod.stok || 0) - item.qty);
+            await prodStore.put(prod);
+          }
+        }
+
+        await tx.done;
+        return transaksi;
+      }
+
+      async function prosesBayar() {
+        if (cart.length === 0) return alert("Keranjang kosong!");
+
+        const metode = document.getElementById("metodeBayar").value;
+        let dibayarkan = 0;
+        const total = parseRupiah(document.getElementById("total").textContent);
+
+        if (metode === "Cash") {
+          dibayarkan =
+            parseFloat(document.getElementById("uangDibayarkan").value) || 0;
+          if (dibayarkan < total) return alert("Uang dibayarkan kurang!");
+        }
+
+        if (confirm("Proses pembayaran?")) {
+          try {
+            const transaksiBaru = await saveTransaksiAndUpdateStock();
+
+            if (
+              !transaksiBaru ||
+              !transaksiBaru.items ||
+              transaksiBaru.items.length === 0
+            ) {
+              alert("Gagal menyimpan transaksi! Coba lagi.");
+              return;
+            }
+
+            let msg = `Pembayaran ${metode} berhasil!\nTotal: ${document.getElementById("total").textContent}`;
+            if (metode === "Cash") {
+              msg += `\nDibayarkan: Rp ${dibayarkan.toLocaleString("id-ID")}\nKembalian: Rp ${(dibayarkan - total).toLocaleString("id-ID")}`;
+            }
+            alert(msg);
+
+            // Clear cart & reset form DULU sebelum redirect
+            cart = [];
+            renderCart();
+            document.getElementById("diskon").value = 0;
+            document.getElementById("uangDibayarkan").value = "";
+            document.getElementById("kembalian").textContent = "Rp 0";
+
+            // Redirect ke halaman struk terakhir
+            window.location.href = "recent-receipt.html";
+          } catch (error) {
+            console.error("Error saat proses bayar:", error);
+            alert("Terjadi kesalahan saat menyimpan transaksi. Coba lagi.");
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

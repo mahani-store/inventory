@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riwayat Transaksi - Mahani Inventori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                900: "#1e3a8a",
+                800: "#1e40af",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-pink-100 min-h-screen flex flex-col">
+    <!-- Wrapper utama -->
+    <div class="flex flex-1">
+      <!-- Header Mobile -->
+      <header
+        class="lg:hidden bg-gradient-to-r from-primary-900 to-primary-800 text-white p-4 flex items-center justify-between shadow-md fixed top-0 left-0 right-0 z-50"
+      >
+        <h1 class="text-2xl font-bold tracking-tight">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-sm text-blue-200 mt-1 opacity-80">
+          Sistem Inventori Modern
+        </p>
+        <button id="hamburgerBtn" class="text-3xl focus:outline-none">
+          ☰
+        </button>
+      </header>
+
+      <!-- SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-primary-900 to-primary-800 text-white flex flex-col shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:static lg:inset-auto"
+      >
+      <div class="p-6 border-b border-purple-700/30">
+        <h1 class="text-2xl font-bold">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-xs text-blue-200 mt-1">Sistem Inventori Modern</p>
+      </div>
+      <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <a
+          href="dashboard.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🏠</span> Dashboard
+        </a>
+        <a
+          href="cashier.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🖥️</span> Kasir
+        </a>
+        <a
+          href="manual-transaction.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🛒</span> Penjualan
+        </a>
+
+        <div
+          class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+        >
+          Produk
+        </div>
+        <a
+          href="search-product.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🔍</span> Cari Produk
+        </a>
+        <a
+          href="product-list.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📋</span> Daftar Produk
+        </a>
+        <a
+          href="restock-product.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📦</span> Restock Produk
+        </a>
+        <a
+          href="add-product.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">➕</span> Tambah Produk
+        </a>
+        <a
+          href="categories.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📁</span> Kelola Kategori
+        </a>
+        <div
+          class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+        >
+          Laporan & Riwayat
+        </div>
+        <a
+          href="#"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📊</span> Laporan Keuangan
+        </a>
+        <a
+          href="transaction-history.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 text-white font-medium transition"
+        >
+          <span class="text-xl mr-4">📜</span> Riwayat Transaksi
+        </a>
+      </nav>
+
+        <!-- Footer Sidebar -->
+        <div class="p-4 border-t border-purple-700/30 text-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p>© 2026 Mahani Inventori</p>
+              <p class="text-xs opacity-70">
+                Dibuat oleh Arunika Mahani Amertha
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Overlay gelap saat sidebar mobile terbuka -->
+      <div
+        id="overlay"
+        class="fixed inset-0 bg-black/50 hidden lg:hidden z-30"
+      ></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col">
+      <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+        <h2 class="text-2xl font-semibold text-gray-800">Riwayat Transaksi</h2>
+        <a
+          href="dashboard.html"
+          class="px-4 py-2 bg-purple-300 text-white hover:bg-blue-600 rounded-lg transition"
+          >Kembali ke Dashboard</a
+        >
+      </header>
+
+      <div class="p-6 md:p-8 max-w-7xl mx-auto">
+        <!-- Table Riwayat Transaksi -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <table class="w-full min-w-max table-auto">
+            <thead class="bg-primary-700 text-white">
+              <tr>
+                <th class="px-6 py-3 text-left">ID Transaksi</th>
+                <th class="px-6 py-3 text-left">Tanggal</th>
+                <th class="px-6 py-3 text-right">Total (Rp)</th>
+                <th class="px-6 py-3 text-left">Metode Bayar</th>
+                <th class="px-6 py-3 text-left">Status</th>
+                <th class="px-6 py-3 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody
+              id="transactionTableBody"
+              class="divide-y divide-gray-200"
+            ></tbody>
+          </table>
+        </div>
+
+        <!-- No Data Message -->
+        <p
+          id="noTransactions"
+          class="hidden text-center text-gray-500 py-10 italic"
+        >
+          Belum ada transaksi tercatat. Mulai jualan yuk! 📈
+        </p>
+      </div>
+
+      <!-- Modal Detail Transaksi -->
+      <div
+        id="transactionModal"
+        class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50"
+      >
+        <div
+          class="bg-white rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+        >
+          <div class="flex justify-between items-center mb-4">
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-800"></h3>
+            <button
+              onclick="closeModal()"
+              class="text-gray-500 hover:text-gray-700 text-2xl"
+            >
+              &times;
+            </button>
+          </div>
+          <div id="modalContent" class="space-y-4"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener("click", () => {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        });
+      }
+
+      if (closeSidebar || overlay) {
+        const closeMenu = () => {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        };
+
+        if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
+        if (overlay) overlay.addEventListener("click", closeMenu);
+      }
+
+      async function openDB() {
+        return idb.openDB("MahaniInventori", 3, {
+          upgrade(db, oldVersion, newVersion, transaction) {
+            if (oldVersion < 3) {
+              // Migrasi data lama: tambah hargaPokok = 0 kalau belum ada
+              // Buat semua store yang dibutuhkan
+              if (!db.objectStoreNames.contains("products")) {
+                db.createObjectStore("products", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("categories")) {
+                db.createObjectStore("categories", { keyPath: "nama" });
+              }
+              if (!db.objectStoreNames.contains("transaksi")) {
+                db.createObjectStore("transaksi", { keyPath: "id" });
+              }
+              if (!db.objectStoreNames.contains("auth")) {
+                db.createObjectStore("auth", { keyPath: "key" });
+              }
+              if (db.objectStoreNames.contains("products")) {
+                const store = transaction.objectStore("products");
+                store.openCursor().onsuccess = (event) => {
+                  const cursor = event.target.result;
+                  if (cursor) {
+                    const item = cursor.value;
+                    if (!item.hargaPokok) {
+                      item.hargaPokok = 0;
+                      cursor.update(item);
+                    }
+                    cursor.continue();
+                  }
+                };
+              }
+            }
+          },
+        });
+      }
+
+      async function loadTransactions() {
+        const db = await openDB();
+        const transaksi = await db.getAll("transaksi");
+        const tableBody = document.getElementById("transactionTableBody");
+        const noTransactions = document.getElementById("noTransactions");
+
+        tableBody.innerHTML = "";
+
+        if (transaksi.length === 0) {
+          noTransactions.classList.remove("hidden");
+          return;
+        }
+
+        noTransactions.classList.add("hidden");
+
+        transaksi.forEach((t) => {
+          const row = document.createElement("tr");
+          row.className = "hover:bg-gray-50 transition";
+          row.innerHTML = `
+            <td class="px-6 py-4">${t.id}</td>
+            <td class="px-6 py-4">${new Date(t.tanggal).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}</td>
+            <td class="px-6 py-4 text-right">Rp ${t.total.toLocaleString("id-ID")}</td>
+            <td class="px-6 py-4">${t.metodeBayar}</td>
+            <td class="px-6 py-4">${t.status}</td>
+            <td class="px-6 py-4 text-center">
+              <button onclick="showDetail('${t.id}')" class="text-blue-600 hover:text-blue-800">Lihat Detail</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      async function showDetail(id) {
+        const db = await openDB();
+        const transaksi = await db.get("transaksi", id);
+        if (!transaksi) return alert("Transaksi tidak ditemukan");
+
+        document.getElementById("modalTitle").textContent =
+          `Detail Transaksi ${id}`;
+        let detailHtml = `
+          <p><strong>Tanggal:</strong> ${new Date(transaksi.tanggal).toLocaleString("id-ID")}</p>
+          <p><strong>Subtotal:</strong> Rp ${transaksi.subtotal.toLocaleString("id-ID")}</p>
+          <p><strong>Diskon:</strong> ${transaksi.diskonPersen}% (Rp ${((transaksi.subtotal * transaksi.diskonPersen) / 100).toLocaleString("id-ID")})</p>
+          <p><strong>Total:</strong> Rp ${transaksi.total.toLocaleString("id-ID")}</p>
+          <p><strong>Metode Bayar:</strong> ${transaksi.metodeBayar}</p>
+          ${
+            transaksi.metodeBayar === "Cash"
+              ? `<p><strong>Uang Dibayarkan:</strong> Rp ${transaksi.uangDibayarkan.toLocaleString("id-ID")}</p>
+          <p><strong>Kembalian:</strong> Rp ${(transaksi.uangDibayarkan - transaksi.total).toLocaleString("id-ID")}</p>`
+              : ""
+          }
+          <p><strong>Status:</strong> ${transaksi.status}</p>
+          <h4 class="font-semibold mt-4">Item Dibeli:</h4>
+          <ul class="space-y-2">
+            ${transaksi.items
+              .map(
+                (item) => `
+              <li class="border-b pb-2">
+                <p>${item.nama} ${item.varian ? "- " + item.varian : ""} x ${item.qty}</p>
+                <p class="text-sm text-gray-600">Subtotal: Rp ${item.subtotal.toLocaleString("id-ID")}</p>
+              </li>
+            `,
+              )
+              .join("")}
+          </ul>
+        `;
+        document.getElementById("modalContent").innerHTML = detailHtml;
+        document.getElementById("transactionModal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("transactionModal").classList.add("hidden");
+      }
+
+      // Init
+      window.addEventListener("load", loadTransactions);
+    </script>
+  </body>
+</html>

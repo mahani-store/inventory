@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restock Produk - Mahani Inventori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                900: "#1e3a8a", // biru tua sidebar
+                800: "#1e40af",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-pink-100 min-h-screen flex flex-col">
+    <!-- Wrapper utama -->
+    <div class="flex flex-1">
+      <!-- Header Mobile -->
+      <header
+        class="lg:hidden bg-gradient-to-r from-primary-900 to-primary-800 text-white p-4 flex items-center justify-between shadow-md fixed top-0 left-0 right-0 z-50"
+      >
+        <h1 class="text-2xl font-bold tracking-tight">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-sm text-blue-200 mt-1 opacity-80">
+          Sistem Inventori Modern
+        </p>
+        <button id="hamburgerBtn" class="text-3xl focus:outline-none">
+          ☰
+        </button>
+      </header>
+
+      <!-- SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-primary-900 to-primary-800 text-white flex flex-col shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:static lg:inset-auto"
+      >
+      <div class="p-6 border-b border-purple-700/30">
+        <h1 class="text-2xl font-bold tracking-tight">
+          MAHANI <span class="text-purple-300">INVENTORI</span>
+        </h1>
+        <p class="text-xs text-blue-200 mt-1 opacity-80">
+          Sistem Inventori Modern
+        </p>
+      </div>
+
+      <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <a
+          href="dashboard.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🏠</span> Dashboard
+        </a>
+        <a
+          href="cashier.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🖥️</span> Kasir
+        </a>
+        <a
+          href="manual-transaction.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🛒</span> Penjualan
+        </a>
+        
+        <div
+          class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+        >
+          Produk
+        </div>
+
+        <a
+          href="search-product.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">🔍</span> Cari Produk
+        </a>
+        <a
+          href="product-list.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📋</span> Daftar Produk
+        </a>
+        <a
+          href="restock-product.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 text-white font-medium transition"
+        >
+          <span class="text-xl mr-4">📦</span> Restock Produk
+        </a>
+        <a
+          href="add-product.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">➕</span> Tambah Produk
+        </a>
+        <a
+          href="categories.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📁</span> Kelola Kategori
+        </a>
+
+        <div
+          class="pt-4 pb-2 px-4 text-xs font-semibold text-blue-200 uppercase tracking-wider opacity-80"
+        >
+          Laporan & Riwayat
+        </div>
+
+        <a
+          href="#"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📊</span> Laporan Keuangan
+        </a>
+        <a
+          href="transaction-history.html"
+          class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700/40 transition"
+        >
+          <span class="text-xl mr-4">📜</span> Riwayat Transaksi
+        </a>
+      </nav>
+
+      <!-- Footer Sidebar -->
+      <div class="p-4 border-t border-purple-700/30 text-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <p>© 2026 Mahani Inventori</p>
+            <p class="text-xs opacity-70">Dibuat oleh Arunika Mahani Amertha</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+      <!-- Overlay gelap saat sidebar mobile terbuka -->
+      <div
+        id="overlay"
+        class="fixed inset-0 bg-black/50 hidden lg:hidden z-30"
+      ></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col">
+      <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+        <h2 class="text-2xl font-semibold text-gray-800">Restock Produk</h2>
+        <a
+          href="dashboard.html"
+          class="px-4 py-2 bg-purple-300 text-white hover:bg-blue-600 rounded-lg transition"
+          >Kembali ke Dashboard
+        </a>
+      </header>
+
+      <div class="p-8 max-w-3xl mx-auto w-full">
+        <!-- Notifikasi Sukses / Error -->
+        <div
+          id="success-message"
+          class="hidden bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-xl mb-8 text-center font-medium"
+        ></div>
+        <div
+          id="error-message"
+          class="hidden bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-8 text-center font-medium"
+        ></div>
+
+    <div class="max-w-lg mx-auto bg-white p-6 rounded-2xl shadow-xl">
+      <h1 class="text-2xl font-semibold mb-6">Restock Produk</h1>
+      <select id="produkSelect" class="w-full p-3 border rounded mb-4">
+        <option>Pilih Produk</option>
+      </select>
+      <label class="block mb-2">Jumlah Restock:</label>
+      <input
+        type="number"
+        id="restockQty"
+        min="1"
+        value="1"
+        class="w-full p-3 border rounded mb-4"
+      />
+      <label class="block mb-2">Harga Total dari Supplier:</label>
+      <input
+        type="number"
+        id="totalHargaSupplier"
+        min="0"
+        placeholder="Rp 1.000.000 untuk 100 pcs"
+        class="w-full p-3 border rounded mb-4"
+      />
+
+      <label class="block mb-2">Harga Pokok per Unit:</label>
+      <input
+        type="number"
+        id="hargaPerUnit"
+        min="0"
+        placeholder="Rp 10.000/pcs"
+        class="w-full p-3 border rounded mb-4"
+      />
+      <label class="block mb-2">*Harga pokok bisa diisi salah satu</label>
+      <button
+        onclick="restockProduk()"
+        class="w-full bg-blue-700 text-white py-3 rounded-lg hover:bg-primary-800"
+      >
+        Restock
+      </button>
+    </div>
+    </div>
+
+    <script>
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener("click", () => {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        });
+      }
+
+      if (closeSidebar || overlay) {
+        const closeMenu = () => {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        };
+
+        if (closeSidebar) closeSidebar.addEventListener("click", closeMenu);
+        if (overlay) overlay.addEventListener("click", closeMenu);
+      }
+      
+      async function openDB() {
+        return idb.openDB("MahaniInventori", 3, {
+          upgrade(db) {
+            if (!db.objectStoreNames.contains("products")) {
+              db.createObjectStore("products", { keyPath: "nama" });
+            }
+          },
+        });
+      }
+
+      async function loadProdukSelect() {
+        const db = await openDB();
+        const products = await db.getAll("products");
+
+        const select = document.getElementById("produkSelect");
+        products.forEach((p) => {
+          const option = document.createElement("option");
+          option.value = p.nama;
+          option.text = `${p.nama} (Stok: ${p.stok || 0}, HPP saat ini: Rp ${(p.hargaPokok || 0).toLocaleString("id-ID")})`;
+          select.add(option);
+        });
+      }
+
+      async function restockProduk() {
+        const nama = document.getElementById("produkSelect").value;
+        const qty = Number(document.getElementById("restockQty").value);
+        const totalHargaSupplier =
+          Number(document.getElementById("totalHargaSupplier").value) || 0;
+        const hargaPerUnit =
+          Number(document.getElementById("hargaPerUnit").value) || 0;
+
+        if (!nama || qty <= 0) return alert("Pilih produk dan jumlah restock!");
+
+        // Validasi: minimal satu harga diisi
+        if (totalHargaSupplier <= 0 && hargaPerUnit <= 0) {
+          return alert(
+            "Isi salah satu: Harga Total dari Supplier atau Harga Pokok per Unit!",
+          );
+        }
+
+        let hppBaruPerUnit;
+        if (hargaPerUnit > 0) {
+          hppBaruPerUnit = hargaPerUnit;
+        } else {
+          hppBaruPerUnit = totalHargaSupplier / qty;
+        }
+
+        const db = await openDB();
+        const tx = db.transaction("products", "readwrite");
+        const prod = await tx.objectStore("products").get(nama);
+
+        if (prod) {
+          const stokLama = Number(prod.stok || 0);
+          const hppLama = Number(prod.hargaPokok || 0);
+          const stokBaru = stokLama + qty;
+
+          // Hitung HPP rata-rata baru
+          const hppRataRata =
+            (stokLama * hppLama + qty * hppBaruPerUnit) / stokBaru;
+
+          prod.stok = stokBaru;
+          prod.hargaPokok = hppRataRata;
+
+          await tx.objectStore("products").put(prod);
+          await tx.done;
+
+          alert(
+            `Restock berhasil!\nStok baru: ${stokBaru}\nHPP rata-rata baru: Rp ${hppRataRata.toFixed(2).toLocaleString("id-ID")}`,
+          );
+          window.location.reload();
+        } else {
+          alert("Produk tidak ditemukan!");
+        }
+      }
+
+      window.addEventListener("load", loadProdukSelect);
+    </script>
+  </body>
+</html>

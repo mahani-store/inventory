@@ -1,0 +1,20 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #strukPrint,
+  #strukPrint * {
+    visibility: visible;
+  }
+  #strukPrint {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 80mm;
+    margin: 0;
+    padding: 10mm;
+    font-size: 12pt;
+    font-family: "Courier New", monospace;
+  }
+}

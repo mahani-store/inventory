@@ -1,0 +1,36 @@
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #strukPrint,
+      #strukPrint * {
+        visibility: visible;
+      }
+      #strukPrint {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 80mm; /* lebar thermal printer */
+        margin: 0;
+        padding: 10mm;
+        font-size: 12pt;
+        font-family: "Courier New", monospace; /* font monospaced mirip struk */
+      }
+    }
+
+    /* Tombol & input lebih mudah disentuh di mobile */
+    @media (max-width: 1024px) {
+      button,
+      input,
+      select,
+      a {
+        min-height: 48px;
+        min-width: 48px;
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+      }
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }

@@ -386,9 +386,9 @@
         .addEventListener("change", function (e) {
           const file = e.target.files[0];
           if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-              // max 2MB
-              alert("Ukuran gambar maksimal 2MB!");
+            if (file.size > 5 * 1024 * 1024) {
+              // max 5MB
+              alert("Ukuran gambar maksimal 5MB!");
               this.value = "";
               document.getElementById("imagePreview").classList.add("hidden");
               return;
